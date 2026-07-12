@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Instagram } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { Database } from '../lib/database.types';
 import { ProductCard } from '../components/product/ProductCard';
@@ -10,76 +10,24 @@ import { getTopPicks, getTrendingProducts, getBestSellers, getNewArrivals } from
 
 type Product = Database['public']['Tables']['products']['Row'];
 type Category = Database['public']['Tables']['categories']['Row'];
-const isMobile = window.matchMedia('(max-width: 768px)').matches;
-const instagramReels = [
-  {
-    url: 'https://www.instagram.com/reel/DV1Q2J_CJVw/',
-    label: 'Store Walkthrough',
-    note: 'Inside the shop',
-  },
-  {
-    url: 'https://www.instagram.com/reel/DVvh0ISDJQT/',
-    label: 'Customer Moment',
-    note: 'Real review clip',
-  },
-  {
-    url: 'https://www.instagram.com/reel/DWHF2GtjOU3/',
-    label: 'Store Visit',
-    note: 'Behind the counter',
-  },
-  {
-    url: 'https://www.instagram.com/reel/DWELQqdDB6d/',
-    label: 'Gifting Set',
-    note: 'Featured combo',
-  },
-];
 
 export const Home = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isMobile, setIsMobile] = useState(
-         window.matchMedia('(max-width: 768px)').matches
-         );
+    window.matchMedia('(max-width: 768px)').matches
+  );
 
-         useEffect(() => {
-           const media = window.matchMedia('(max-width: 768px)');
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 768px)');
 
-          const listener = () => setIsMobile(media.matches);
-          media.addEventListener('change', listener);
+    const listener = () => setIsMobile(media.matches);
+    media.addEventListener('change', listener);
 
-         return () => media.removeEventListener('change', listener);
-         }, []);
+    return () => media.removeEventListener('change', listener);
+  }, []);
   useEffect(() => {
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    const instagramWindow = window as Window & {
-      instgrm?: {
-        Embeds?: {
-          process: () => void;
-        };
-      };
-    };
-
-    const processEmbeds = () => instagramWindow.instgrm?.Embeds?.process();
-    const existingScript = document.querySelector<HTMLScriptElement>('script[data-instagram-embed-script="true"]');
-
-    if (existingScript) {
-      processEmbeds();
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = 'https://www.instagram.com/embed.js';
-    script.setAttribute('data-instagram-embed-script', 'true');
-    script.onload = processEmbeds;
-    document.body.appendChild(script);
-
-    return () => {
-      script.onload = null;
-    };
   }, []);
 
   const fetchData = async () => {
@@ -117,14 +65,14 @@ export const Home = () => {
         <div
           className="absolute inset-0"
           style={{
-                  backgroundImage: isMobile
-                  ? "url('https://ik.imagekit.io/aamir010/Bin%20hashim%20E%20commerce/Gemini_Generated_Image_3qv8mo3qv8mo3qv8%20(1).png')"
-                  : "url('https://ik.imagekit.io/aamir010/Bin%20hashim%20E%20commerce/Gemini_Generated_Image_cdnetqcdnetqcdne.png')",
-                  backgroundSize: 'cover',
-                  backgroundPosition: isMobile ? 'center top' : 'center',
-                  animation: 'heroImageZoom 1.8s ease-out forwards',
-                  transformOrigin: 'center',
-                }}
+            backgroundImage: isMobile
+              ? "url('https://ik.imagekit.io/aamir010/Bin%20hashim%20E%20commerce/Gemini_Generated_Image_3qv8mo3qv8mo3qv8%20(1).png')"
+              : "url('https://ik.imagekit.io/aamir010/Bin%20hashim%20E%20commerce/Gemini_Generated_Image_cdnetqcdnetqcdne.png')",
+            backgroundSize: 'cover',
+            backgroundPosition: isMobile ? 'center top' : 'center',
+            animation: 'heroImageZoom 1.8s ease-out forwards',
+            transformOrigin: 'center',
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/40" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent lg:from-black/20 lg:to-black/25" />
@@ -151,7 +99,7 @@ export const Home = () => {
             </p>
             <div className="flex flex-row gap-3 flex-wrap justify-start lg:justify-start lg:mt-6 flex lg:justify-center">
               <Link to="/products" className="w-fit lg:w-auto">
-                <Button  className="inline-flex items-center gap-2 
+                <Button className="inline-flex items-center gap-2 
              px-5 py-2.5
              border border-black/90
              bg-black/80 text-white
@@ -202,108 +150,22 @@ export const Home = () => {
                 View All
               </Link>
             </div>
-            <div className="overflow-x-auto -mx-4 px-4">
-              <div className="flex gap-4 pb-4">
-                {trending.map((product) => (
-                  <div key={product.id} className="flex-none w-48 md:w-64">
-                    <ProductCard product={product} compact />
-                  </div>
-                ))}
+            <div className="w-full overflow-hidden">
+              <div className="w-full max-w-full overflow-x-auto overflow-y-hidden pb-4">
+                <div className="flex gap-4 w-fit">
+                  {trending.map((product) => (
+                    <div key={product.id} className="flex-none w-48 md:w-64">
+                      <ProductCard product={product} compact />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </section>
       )}
 
-      <section className="py-20 bg-[linear-gradient(180deg,#f7f4ee_0%,#efe7db_100%)] border-y border-black/5 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-10">
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-4 py-2 text-xs font-semibold tracking-[0.22em] uppercase text-black/60 mb-5">
-                <Instagram size={16} />
-                Social Showcase
-              </div>
-              <h2 className="text-4xl md:text-5xl font-light tracking-[0.02em] text-neutral-900 mb-4">
-                The Store, The Styling, The Real Customer Energy
-              </h2>
-              <p className="text-base md:text-lg text-neutral-600 max-w-xl leading-8">
-                A more editorial look at Bin Hashim. Browse the latest reels, customer visits, and in-store highlights without leaving the page.
-              </p>
-            </div>
-            <a
-              href="https://www.instagram.com/bin_hashim_0555?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-full bg-neutral-950 px-6 py-3 text-sm font-medium tracking-wide text-white transition-transform hover:-translate-y-0.5"
-            >
-              Open Instagram Profile
-            </a>
-          </div>
-
-          <div className="overflow-x-auto -mx-4 px-4 pb-4">
-            <div className="flex gap-6 w-max min-w-full">
-              {instagramReels.map((reel) => (
-                <div
-                  key={reel.url}
-                  className="flex-none w-[320px] md:w-[360px] rounded-[28px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(248,244,238,0.98)_100%)] p-3 shadow-[0_24px_80px_rgba(0,0,0,0.08)]"
-                >
-                  <div className="flex items-start justify-between gap-4 px-2 pb-3">
-                    <div>
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-500">
-                        {reel.note}
-                      </div>
-                      <div className="text-lg font-medium text-neutral-900">
-                        {reel.label}
-                      </div>
-                    </div>
-                    <div className="rounded-full border border-black/10 bg-white px-3 py-1 text-[11px] font-medium text-neutral-600">
-                      Reel
-                    </div>
-                  </div>
-
-                  <div className="overflow-hidden rounded-[22px] bg-white ring-1 ring-black/5">
-                    <blockquote
-                      className="instagram-media"
-                      data-instgrm-permalink={`${reel.url}?utm_source=ig_embed&utm_campaign=loading`}
-                      data-instgrm-version="14"
-                      style={{
-                        background: '#FFF',
-                        border: 0,
-                        borderRadius: '0',
-                        boxShadow: 'none',
-                        margin: '0 auto',
-                        maxWidth: '540px',
-                        minWidth: '280px',
-                        padding: 0,
-                        width: '100%',
-                      }}
-                    >
-                      <div style={{ padding: '16px' }}>
-                        <a
-                          href={`${reel.url}?utm_source=ig_embed&utm_campaign=loading`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            background: '#FFFFFF',
-                            lineHeight: 0,
-                            padding: '0',
-                            textAlign: 'center',
-                            textDecoration: 'none',
-                            width: '100%',
-                            display: 'block',
-                          }}
-                        >
-                          View this post on Instagram
-                        </a>
-                      </div>
-                    </blockquote>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Instagram showcase section temporarily disabled while investigating layout overflow. */}
 
       <section className="bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -326,7 +188,7 @@ export const Home = () => {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                      <span className="text-2xl font-light">{category.name}</span>
+                      <span className="text-2xl text-center font-light">{category.name}</span>
                     </div>
                   )}
                 </div>
